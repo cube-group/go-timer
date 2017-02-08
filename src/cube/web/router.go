@@ -1,7 +1,6 @@
 package web
 
 import (
-	"container/list"
 	"net/http"
 )
 
@@ -20,15 +19,18 @@ type Request struct {
 
 	Body     IBody
 	Query    IQuery
+
+	r        *http.Request
 }
 
 //get header from the Request
 func (req Request)header(key string) string {
-	return req.dispatcher.r.Header.Get(key)
+	return req.r.Header.Get(key)
 }
 
 //package the new response
 type Response struct {
+	writer http.ResponseWriter
 }
 
 type Router struct {
@@ -37,15 +39,18 @@ type Router struct {
 	res     Response
 }
 
-func NewRouter(r *http.Request) Router {
+func NewRouter(writer http.ResponseWriter, r *http.Request) Router {
 	req := Request{
 		Protocol:r.Proto,
 		Host:r.Host,
 		Refer:r.Referer(),
 		Method:r.Method,
+
+		r:r,
 	}
 
 	res := Response{
+		writer:writer,
 	}
 
 	router := Router{r.URL.Path, req, res}

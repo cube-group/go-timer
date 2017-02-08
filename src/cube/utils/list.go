@@ -9,6 +9,13 @@ func (list *List)Len() int {
 	return len(list.Value)
 }
 
+func (list *List)Current() interface{} {
+	if list.Len() > 0 {
+		return list.Value[list.Index]
+	}
+	return nil
+}
+
 func (list *List)Next() interface{} {
 	if list.Len() == list.Index + 1 {
 		return false
